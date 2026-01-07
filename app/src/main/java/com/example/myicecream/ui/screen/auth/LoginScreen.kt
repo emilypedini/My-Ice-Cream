@@ -15,10 +15,9 @@ import com.example.myicecream.ui.screen.init.AuthHeader
 
 @Composable
 fun LoginScreen(
-    onRegistratiClick: () -> Unit
+    onRegistratiClick: () -> Unit, viewModel: LoginViewModel
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val state by viewModel.loginState
 
     AuthHeader {
         Text(
@@ -36,8 +35,8 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = state.email,
+                onValueChange = { viewModel.onEmailChange(it)},
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -47,8 +46,8 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = state.password,
+                onValueChange = { viewModel.onPasswordChange(it)},
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -74,7 +73,15 @@ fun LoginScreen(
             Button(
                 onClick = onRegistratiClick,
                 modifier = Modifier.width(200.dp)
-            ) { Text("Registrati", fontSize = 18.sp) }
+            ) {
+                Text("Registrati", fontSize = 18.sp)
+            }
+        }
+    }
+
+    LaunchedEffect(state.isUserLogged) {
+        if (state.isUserLogged) {
+            // navController.navigate("login") o home
         }
     }
 }

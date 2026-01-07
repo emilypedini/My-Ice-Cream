@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 data class SignUpState(
     val name: String = "",
     val surname: String = "",
-    val phone: String? = "",
+    val phone: String = "",
     val email: String = "",
     val password: String = "",
     val isLoading: Boolean = false,
@@ -32,7 +32,7 @@ class SignUpViewModel( private val authRepository: AuthRepository) : ViewModel()
         _singupState.value = _singupState.value.copy(surname = surname)
     }
 
-    fun onPhoneChange(phone: String?) {
+    fun onPhoneChange(phone: String) {
         _singupState.value = _singupState.value.copy(phone = phone)
     }
 

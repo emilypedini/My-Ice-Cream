@@ -19,15 +19,10 @@ import com.example.myicecream.ui.screen.init.AuthHeader
 
 
 @Composable
-fun RegistrazioneScreen() {
-    var nome by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var cognome by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var indirizzo by remember { mutableStateOf("") }
-    var showPassword by remember { mutableStateOf(false) }
+fun RegistrazioneScreen(viewModel: SignUpViewModel) {
+    val state by viewModel.singupState
 
+    var showPassword by remember { mutableStateOf(false) }
 
     AuthHeader {
         Text(
@@ -45,8 +40,8 @@ fun RegistrazioneScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = nome,
-                onValueChange = { nome = it },
+                value = state.name,
+                onValueChange = { viewModel.onNameChange(it)},
                 label = { Text("Nome") },
                 modifier = Modifier.fillMaxWidth(),
                         singleLine = true
@@ -55,8 +50,8 @@ fun RegistrazioneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
-                value = cognome,
-                onValueChange = { cognome = it },
+                value = state.surname,
+                onValueChange = { viewModel.onSurnameChange(it)},
                 label = { Text("Cognome") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -64,8 +59,8 @@ fun RegistrazioneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
-                value = telefono,
-                onValueChange = { telefono = it },
+                value = state.phone,
+                onValueChange = { viewModel.onPhoneChange(it)},
                 label = { Text("Telefono") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -73,19 +68,9 @@ fun RegistrazioneScreen() {
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-
             OutlinedTextField(
-                value = indirizzo,
-                onValueChange = { indirizzo = it },
-                label = { Text("Indirizzo") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = state.email,
+                onValueChange = { viewModel.onEmailChange(it)},
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -95,8 +80,8 @@ fun RegistrazioneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = state.password,
+                onValueChange = { viewModel.onPasswordChange(it)},
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -112,11 +97,18 @@ fun RegistrazioneScreen() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-
             Button(
-                onClick = { /* TODO registra */ },
+                onClick = { viewModel.signup() },
+                enabled = !state.isLoading,
                 modifier = Modifier.width(200.dp)
             ) { Text("Registrati", fontSize = 18.sp) }
         }
     }
+
+    LaunchedEffect(state.isRegistered) {
+        if (state.isRegistered) {
+            // navController.navigate("login") o home
+        }
+    }
 }
+

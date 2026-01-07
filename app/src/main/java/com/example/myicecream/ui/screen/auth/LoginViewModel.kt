@@ -13,7 +13,7 @@ data class LoginState(
     val password: String = "",
     val isLoading: Boolean = false,
     val messageError: String? = null,
-    val loggedUser: UserEntity? = null //sapere se il login è OK
+    val isUserLogged: Boolean = false //sapere se il login è OK
 ){}
 
 class LoginViewModel( private val authRepository: AuthRepository) : ViewModel(){
@@ -48,7 +48,7 @@ class LoginViewModel( private val authRepository: AuthRepository) : ViewModel(){
             _loginState.value = if (user !=  null) {
                 _loginState.value.copy(
                     isLoading = false,
-                    loggedUser = user,
+                    isUserLogged = true,
                     messageError = null
                 )
             } else {
