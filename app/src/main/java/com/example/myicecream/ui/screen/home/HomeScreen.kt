@@ -9,9 +9,5 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HomeScreen() {
-    Column(
-        modifier = Modifier.height(16.dp)
-    ) {
-        Text("Benvenuta nella Home!")
-    }
+
 }

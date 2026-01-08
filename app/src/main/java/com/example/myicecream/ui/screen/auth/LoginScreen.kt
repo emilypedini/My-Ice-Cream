@@ -3,12 +3,16 @@ package com.example.myicecream.ui.screen.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myicecream.ui.screen.init.AuthHeader
@@ -18,6 +22,7 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit, onRegistratiClick: () -> Unit, viewModel: LoginViewModel
 ) {
     val state by viewModel.loginState
+    var showPassword by remember { mutableStateOf(false) }
 
     AuthHeader {
         Text(
@@ -51,7 +56,13 @@ fun LoginScreen(
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val icon = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                    IconButton(onClick = { showPassword = !showPassword }) {
+                        Icon(imageVector = icon, contentDescription = if (showPassword) "Nascondi password" else "Mostra password")
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

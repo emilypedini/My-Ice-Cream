@@ -13,7 +13,7 @@ data class LoginState(
     val password: String = "",
     val isLoading: Boolean = false,
     val messageError: String? = null,
-    val isUserLogged: Boolean = false //sapere se il login è OK
+    val isUserLogged: Boolean = false
 ){}
 
 class LoginViewModel( private val authRepository: AuthRepository) : ViewModel(){

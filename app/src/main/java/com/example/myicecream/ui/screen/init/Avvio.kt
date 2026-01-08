@@ -30,7 +30,7 @@ fun Avvio(navController: NavController) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(130.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -44,7 +44,6 @@ fun Avvio(navController: NavController) {
         }
     }
 
-    // Naviga automaticamente alla schermata di login
     LaunchedEffect(Unit) {
         delay(2000) // 2 secondi
         navController.navigate("login") {

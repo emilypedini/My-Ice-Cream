@@ -24,7 +24,7 @@ fun AuthHeader(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(1.dp))
 
         Row(
             modifier = Modifier
@@ -54,7 +54,7 @@ fun AuthHeader(
             color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         Column(
             modifier = Modifier.fillMaxSize(),
