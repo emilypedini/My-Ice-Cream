@@ -85,7 +85,8 @@ fun MainNavigation(themeViewModel: ThemeViewModel) {
 
                 SettingsScreen(
                     themeViewModel = themeViewModel,
-                    profileViewModel = profileViewModel
+                    profileViewModel = profileViewModel,
+                    navController = navController
                 )
             }
         }

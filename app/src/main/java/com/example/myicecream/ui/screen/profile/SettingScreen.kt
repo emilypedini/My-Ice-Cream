@@ -11,9 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.myicecream.ui.screen.theme.ThemeViewModel
 import com.example.utils.camera.rememberCameraLauncher
@@ -22,7 +26,8 @@ import com.example.utils.camera.rememberGalleryLauncher
 @Composable
 fun SettingsScreen(
     themeViewModel: ThemeViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    navController: NavController
 ) {
     val imageUri by profileViewModel.profileImageUri.collectAsState()
     val name by profileViewModel.name.collectAsState()
@@ -35,23 +40,35 @@ fun SettingsScreen(
         profileViewModel.onImageCaptured(uri)
     }
 
+    LaunchedEffect(Unit) {
+        newName= name
+        newSurname = surname
+    }
+
     val galleryLauncher = rememberGalleryLauncher { uri ->
         profileViewModel.onImageCaptured(uri)
     }
 
+    var popUpPwd by remember { mutableStateOf(false)}
+    var popUpError by remember { mutableStateOf(false)}
     var menuExpanded by remember { mutableStateOf(false) }
-
+    var popUpPhoto by remember { mutableStateOf(false) }
+    var popUpSave by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Text(
             text = "Modifica profilo",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Italic,
+            fontSize = 30.sp,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -104,13 +121,15 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
-            onClick = { profileViewModel.resetProfileImage() },
+            onClick = { popUpPhoto = true },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error
+                containerColor = MaterialTheme.colorScheme.primary
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.width(200.dp)
         ) {
-            Text("Rimuovi foto profilo", color = Color.White)
+            Text("Rimuovi foto profilo",
+                color = MaterialTheme.colorScheme.background
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -119,7 +138,8 @@ fun SettingsScreen(
             value = newName,
             onValueChange = { newName = it },
             label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -128,7 +148,8 @@ fun SettingsScreen(
             value = newSurname,
             onValueChange = { newSurname = it },
             label = { Text("Cognome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -148,13 +169,168 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
+
         Button(
             onClick = {
-                profileViewModel.updateUserInfo(newName, newSurname)
+                if(newName.isBlank() || newSurname.isBlank()){
+                    popUpError = true
+                } else{
+                    popUpSave = true
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Salva modifiche")
         }
+        if (popUpPhoto) {
+            AlertDialog(
+                onDismissRequest = { popUpPhoto = false },
+                title = { Text("Rimuovere la foto?") },
+                text = { Text("Sei sicura di voler eliminare la foto profilo?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            profileViewModel.resetProfileImage()
+                            popUpPhoto = false
+                        }
+                ) {
+                        Text("Sì", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { popUpPhoto = false }) {
+                        Text("Annulla")
+                    }
+                }
+            )
+        }
+        if(popUpSave) {
+            AlertDialog(
+                onDismissRequest = { popUpSave = false },
+                title = { Text("Salvare le modifiche?") },
+                text = { Text("Vuoi salvare le modifiche apportate al profilo?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            profileViewModel.updateUserInfo(newName,newSurname)
+                            popUpSave = false
+                            navController.popBackStack()
+                        }
+                    ) {
+                        Text("Sì", color = MaterialTheme.colorScheme.primary)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {popUpSave= false
+                        navController.popBackStack()}
+                    ) {
+                        Text("Annulla")
+                    }
+                }
+
+            )
+        }
+
+
+        if(popUpError){
+            AlertDialog(
+                onDismissRequest = { popUpError = false },
+                title = { Text("Campi non validi") },
+                text = { Text("Nome e cognome non possono essere vuoti.") },
+                confirmButton = {
+                    TextButton(onClick = { popUpError = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+        Button(
+            onClick = {popUpPwd = true},
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text("Modifica password")
+        }
+
+        if (popUpPwd) {
+            var currentPwd by remember { mutableStateOf("") }
+            var newPwd by remember { mutableStateOf("") }
+            var confirmPwd by remember { mutableStateOf("") }
+            var errorMessage by remember { mutableStateOf<String?>(null) }
+
+            AlertDialog(
+                onDismissRequest = { popUpPwd = false },
+                title = { Text("Modifica password") },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = currentPwd,
+                            onValueChange = { currentPwd = it },
+                            label = { Text("Password attuale") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+
+                        OutlinedTextField(
+                            value = newPwd,
+                            onValueChange = { newPwd = it },
+                            label = { Text("Nuova password") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+
+                        OutlinedTextField(
+                            value = confirmPwd,
+                            onValueChange = { confirmPwd = it },
+                            label = { Text("Conferma nuova password") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        if (errorMessage != null) {
+                            Spacer(Modifier.height(12.dp))
+                            Text(errorMessage!!, color = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            // Validazioni
+                            if (newPwd != confirmPwd) {
+                                errorMessage = "Le nuove password non combaciano."
+                                return@TextButton
+                            }
+
+                            if (newPwd.isBlank()) {
+                                errorMessage = "La nuova password non può essere vuota."
+                                return@TextButton
+                            }
+
+                            profileViewModel.changePassword(
+                                currentPassword = currentPwd,
+                                newPassword = newPwd
+                            ) { success, message ->
+                                if (!success) {
+                                    errorMessage = message
+                                } else {
+                                    popUpPwd = false
+                                }
+                            }
+                        }
+                    ) {
+                        Text("Salva")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { popUpPwd = false }) {
+                        Text("Annulla")
+                    }
+                }
+            )
+        }
+
+
+
     }
+
 }

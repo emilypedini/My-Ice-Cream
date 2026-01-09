@@ -12,8 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.collectAsState
@@ -63,7 +62,7 @@ fun ProfileScreen(
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
-                    Icons.Default.Settings,
+                    Icons.Default.Edit,
                     contentDescription = null,
                     modifier = Modifier.size(25.dp),
                     tint = if (MaterialTheme.colorScheme.surface == Color.Black)

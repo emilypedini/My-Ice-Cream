@@ -78,6 +78,23 @@ class ProfileViewModel(
             _surname.value = newSurname
         }
     }
+
+    fun changePassword(
+        currentPassword: String,
+        newPassword: String,
+        onResult:(Boolean, String) -> Unit
+    ){
+        viewModelScope.launch{
+            val user = userRepository.getUserById(userId)
+            if(user.password != currentPassword) {
+                onResult(false, "La password attuale non è corretta.")
+                return@launch
+            }
+            userRepository.updatePassword(userId, newPassword)
+            onResult(true, "Password aggiornata con successo.")
+        }
+    }
+
 }
 
 
