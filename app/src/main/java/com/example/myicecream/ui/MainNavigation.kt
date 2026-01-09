@@ -20,6 +20,7 @@ import com.example.myicecream.ui.screen.init.Avvio
 import com.example.myicecream.ui.screen.main.MainScreen
 import com.example.myicecream.ui.screen.profile.SettingsScreen
 import com.example.myicecream.ui.screen.theme.ThemeViewModel
+import com.example.myicecream.ui.screen.notifications.NotificationsScreen
 
 @Composable
 fun MainNavigation(themeViewModel: ThemeViewModel) {
@@ -75,5 +76,9 @@ fun MainNavigation(themeViewModel: ThemeViewModel) {
         composable("settings") {
             SettingsScreen(themeViewModel)
         }
+
+        //composable("notifications") {
+          //  NotificationsScreen()
+       // }
     }
 }

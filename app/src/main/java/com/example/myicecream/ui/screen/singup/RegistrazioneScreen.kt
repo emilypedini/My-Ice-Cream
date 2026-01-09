@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.sp
 import com.example.myicecream.data.database.UserEntity
 import com.example.myicecream.ui.screen.init.AuthHeader
 
-
-
 @Composable
 fun RegistrazioneScreen(onSignUpSuccess: (UserEntity) -> Unit, viewModel: SignUpViewModel) {
     val state by viewModel.singupState

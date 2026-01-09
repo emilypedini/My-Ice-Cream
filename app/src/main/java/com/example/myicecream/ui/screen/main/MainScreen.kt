@@ -52,7 +52,7 @@ fun MainScreen(
             startDestination = NavBar.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(NavBar.Home.route) { HomeScreen() }
+            composable(NavBar.Home.route) { HomeScreen(navController = rootNavController) }
             composable(NavBar.Map.route) {
                 val context = LocalContext.current
                 val locationService = remember { LocationService(context) }
@@ -62,7 +62,7 @@ fun MainScreen(
             }
 
             composable(NavBar.Home.route) {
-                HomeScreen()
+                HomeScreen(navController = rootNavController)
             }
 
             composable(NavBar.Profile.route) {
