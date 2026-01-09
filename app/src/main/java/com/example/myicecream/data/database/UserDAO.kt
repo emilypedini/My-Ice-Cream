@@ -32,5 +32,6 @@ interface UserDAO {
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserById(id: Int): UserEntity
 
-
+    @Query("SELECT name FROM users WHERE id = :userId")
+    suspend fun getName(userId: Int): String
 }

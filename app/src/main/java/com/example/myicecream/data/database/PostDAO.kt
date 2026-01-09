@@ -31,4 +31,7 @@ interface PostDAO {
 
     @Query("DELETE FROM posts WHERE idPost = :idPost")
     suspend fun deletePost(idPost: Int)
+
+    @Query("SELECT userId FROM posts WHERE idPost = :postId")
+    suspend fun getPostOwner(postId: Int): Int
 }
