@@ -12,7 +12,7 @@ interface NotificationDAO {
     suspend fun insertNotification(notification: NotificationEntity)
 
     @Query("SELECT * FROM notifications WHERE userId = :userId OR userId IS NULL ORDER BY createdAt DESC")
-    suspend fun getUserNotifications(userId: Int): Flow<List<NotificationEntity>>
+    fun getUserNotifications(userId: Int): Flow<List<NotificationEntity>>
 
     @Query("UPDATE notifications SET isRead = 1 WHERE idNot = :idNot")
     suspend fun markAsRead(idNot: Int)

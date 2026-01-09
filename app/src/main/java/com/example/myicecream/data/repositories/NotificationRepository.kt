@@ -12,7 +12,7 @@ class NotificationRepository(private val notificationDAO: NotificationDAO) {
             userId = userId, title = title, message = message))
     }
 
-    suspend fun getNotifications(userId: Int): Flow<List<NotificationEntity>> {
+    fun getNotifications(userId: Int): Flow<List<NotificationEntity>> {
         return notificationDAO.getUserNotifications(userId)
     }
 
