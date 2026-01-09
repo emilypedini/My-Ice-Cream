@@ -1,9 +1,13 @@
 package com.example.myicecream.data.database
 
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "users")
+@Entity(tableName = "users",
+    indices = [Index(value = ["nickname"], unique = true)]
+)
 data class UserEntity(
 
     @PrimaryKey(autoGenerate = true)
@@ -11,6 +15,8 @@ data class UserEntity(
 
     val name: String,
     val surname: String,
+
+    val nickname: String,
 
     val email: String,
 

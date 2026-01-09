@@ -8,7 +8,9 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [
         UserEntity::class,
-        PostEntity::class
+        PostEntity::class,
+        LikeEntity::class,
+        NotificationEntity::class
     ],
     version = 1
 )
@@ -16,6 +18,8 @@ abstract class IceCreamDatabase :  RoomDatabase(){
 
     abstract fun userDAO(): UserDAO
     abstract fun postDAO(): PostDAO
+    abstract fun likeDAO(): LikeDAO
+    abstract fun notificationDAO(): NotificationDAO
 
     companion object {
         @Volatile

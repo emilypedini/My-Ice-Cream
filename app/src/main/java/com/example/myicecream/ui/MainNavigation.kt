@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myicecream.data.database.IceCreamDatabase
 import com.example.myicecream.data.database.UserEntity
 import com.example.myicecream.data.repositories.AuthRepository
+import com.example.myicecream.data.repositories.NotificationRepository
 import com.example.myicecream.data.repositories.UserRepository
 import com.example.myicecream.ui.screen.auth.LoginScreen
 import com.example.myicecream.ui.screen.auth.LoginViewModel
@@ -19,6 +20,8 @@ import com.example.myicecream.ui.screen.singup.RegistrazioneScreen
 import com.example.myicecream.ui.screen.singup.SignUpViewModel
 import com.example.myicecream.ui.screen.init.Avvio
 import com.example.myicecream.ui.screen.main.MainScreen
+import com.example.myicecream.ui.screen.notifications.NotificationScreen
+import com.example.myicecream.ui.screen.notifications.NotificationsViewModel
 import com.example.myicecream.ui.screen.profile.ProfileViewModel
 import com.example.myicecream.ui.screen.profile.SettingsScreen
 import com.example.myicecream.ui.screen.theme.ThemeViewModel
@@ -87,6 +90,18 @@ fun MainNavigation(themeViewModel: ThemeViewModel) {
                     themeViewModel = themeViewModel,
                     profileViewModel = profileViewModel
                 )
+            }
+        }
+
+        composable("notifications") {
+            loggedUser?.let { user ->
+                val notificationsViewModel = remember {
+                    NotificationsViewModel(
+                        notificationRepository = NotificationRepository(db.notificationDAO()),
+                        userId = user.id
+                    )
+                }
+                NotificationScreen(viewModel = notificationsViewModel)
             }
         }
     }
