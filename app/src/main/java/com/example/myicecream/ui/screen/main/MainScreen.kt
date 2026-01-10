@@ -11,15 +11,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myicecream.data.database.IceCreamDatabase
+import com.example.myicecream.data.database.LikeDAO
 import com.example.myicecream.data.database.UserEntity
+import com.example.myicecream.data.repositories.LikeRepository
 import com.example.myicecream.data.repositories.NotificationRepository
+import com.example.myicecream.data.repositories.PostRepository
 import com.example.myicecream.data.repositories.UserRepository
 import com.example.myicecream.ui.composable.ToolBar
 import com.example.myicecream.ui.composable.NavBar
 import com.example.myicecream.ui.screen.home.HomeScreen
+import com.example.myicecream.ui.screen.home.HomeViewModel
 import com.example.myicecream.ui.screen.map.MapScreen
 import com.example.myicecream.ui.screen.map.MapViewModel
 import com.example.myicecream.ui.screen.notifications.NotificationsViewModel
+import com.example.myicecream.ui.screen.posts.CreatePostScreen
+import com.example.myicecream.ui.screen.posts.PostViewModel
 import com.example.myicecream.ui.screen.profile.ProfileScreen
 import com.example.myicecream.ui.screen.profile.ProfileViewModel
 import com.example.myicecream.ui.screen.theme.ThemeViewModel
@@ -49,6 +55,31 @@ fun MainScreen(
         )
     }
 
+    val likeRepository = remember {
+        LikeRepository(
+            likeDAO = db.likeDAO(),
+            notificationRepository = NotificationRepository(db.notificationDAO()),
+            postDAO = db.postDAO(),
+            userDAO = db.userDAO()
+        )
+    }
+
+    val homeViewModel = remember {
+        HomeViewModel(
+            postRepository = PostRepository(db.postDAO(), db.notificationDAO()),
+            likeRepository = likeRepository,
+            likeDAO = db.likeDAO(),
+            loggedUserId = loggedUser.id
+        )
+    }
+
+    val postViewModel = remember {
+        PostViewModel(
+            postRepository = PostRepository(db.postDAO(), db.notificationDAO()),
+            userId = loggedUser.id
+        )
+    }
+
     Scaffold(
         bottomBar = { ToolBar(navController) }
     ) { innerPadding ->
@@ -59,7 +90,7 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(NavBar.Home.route) { HomeScreen(navController = rootNavController,
-                notificationsViewModel = notificationsViewModel) }
+                notificationsViewModel = notificationsViewModel, homeViewModel = homeViewModel) }
             composable(NavBar.Map.route) {
                 val context = LocalContext.current
                 val locationService = remember { LocationService(context) }
@@ -68,14 +99,18 @@ fun MainScreen(
                 MapScreen(viewModel = mapViewModel)
             }
 
-            composable(NavBar.Home.route) {
-                HomeScreen(navController = rootNavController, notificationsViewModel = notificationsViewModel)
-            }
 
             composable(NavBar.Profile.route) {
                 ProfileScreen(
                     navController = rootNavController,
                     viewModel = profileViewModel
+                )
+            }
+
+            composable(NavBar.Add.route) {
+                CreatePostScreen(
+                    navController = rootNavController,
+                    postViewModel = postViewModel
                 )
             }
         }

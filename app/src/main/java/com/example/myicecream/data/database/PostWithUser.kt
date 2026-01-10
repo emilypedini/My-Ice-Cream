@@ -1,5 +1,7 @@
 package com.example.myicecream.data.database
 
+import android.provider.ContactsContract.CommonDataKinds.Nickname
+
 data class PostWithUser(
     val postId: Int,
     val description: String,
@@ -7,6 +9,7 @@ data class PostWithUser(
     val createdAt: Long,
 
     val userId: Int,
+    val nickname: String,
     val name: String,
     val surname: String,
     val profileImagePath: String?

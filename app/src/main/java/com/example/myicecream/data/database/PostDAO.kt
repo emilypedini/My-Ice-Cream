@@ -17,6 +17,7 @@ interface PostDAO {
         p.postImageUri AS imageUri,
         p.createdAt,
         u.id AS userId,
+        u.nickname,
         u.name,
         u.surname,
         u.profileImagePath

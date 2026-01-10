@@ -1,0 +1,54 @@
+package com.example.myicecream.ui.screen.posts
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.myicecream.data.database.PostEntity
+import com.example.myicecream.data.repositories.PostRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+class PostViewModel(
+    private val postRepository: PostRepository,
+    private val userId: Int
+): ViewModel() {
+
+    private val _imageUri = MutableStateFlow<String?>(null)
+    val imageUri = _imageUri.asStateFlow()
+
+    private val _description = MutableStateFlow("")
+    val description = _description.asStateFlow()
+
+    fun onImageSelect(uri: String) {
+        _imageUri.value = uri
+    }
+
+    fun onDescriptionChange(text: String) {
+        _description.value = text
+    }
+
+    fun createPost(
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        val image = imageUri.value ?: return
+        val descr = description.value
+
+        viewModelScope.launch {
+            val success = postRepository.createNewPost(
+                PostEntity(
+                    userId = userId,
+                    postImageUri = image,
+                    description = descr
+                )
+            )
+            if(success) {
+                _imageUri.value = null
+                _description.value = ""
+                onSuccess()
+            } else {
+                onError()
+            }
+        }
+    }
+}
