@@ -2,7 +2,6 @@ package com.example.myicecream.ui.screen.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -20,48 +19,61 @@ import com.example.myicecream.ui.screen.init.AuthHeader
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: (UserEntity) -> Unit, onRegistratiClick: () -> Unit, viewModel: LoginViewModel
+    onLoginSuccess: (UserEntity) -> Unit,
+    onRegistratiClick: () -> Unit,
+    viewModel: LoginViewModel
 ) {
     val state by viewModel.loginState
     var showPassword by remember { mutableStateOf(false) }
 
-    AuthHeader {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        AuthHeader()
         Text(
             text = "Accedi o registrati",
             fontSize = 30.sp,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 12.dp)
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             OutlinedTextField(
                 value = state.email,
-                onValueChange = { viewModel.onEmailChange(it)},
+                onValueChange = { viewModel.onEmailChange(it) },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    keyboardType = KeyboardType.Email
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.password,
-                onValueChange = { viewModel.onPasswordChange(it)},
+                onValueChange = { viewModel.onPasswordChange(it) },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val icon = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff
                     IconButton(onClick = { showPassword = !showPassword }) {
-                        Icon(imageVector = icon, contentDescription = if (showPassword) "Nascondi password" else "Mostra password")
+                        Icon(
+                            imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = null
+                        )
                     }
                 }
             )
@@ -69,14 +81,18 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.login()},
+                onClick = { viewModel.login() },
                 modifier = Modifier.width(200.dp)
-            ) { Text("Accedi", fontSize = 18.sp) }
+            ) {
+                Text("Accedi", fontSize = 18.sp)
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Divider(
-                modifier = Modifier.fillMaxWidth().height(2.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp),
                 color = MaterialTheme.colorScheme.primary
             )
 
@@ -90,7 +106,6 @@ fun LoginScreen(
             }
         }
     }
-
     LaunchedEffect(state.isUserLogged) {
         if (state.isUserLogged && state.loggedUser != null) {
             onLoginSuccess(state.loggedUser!!)

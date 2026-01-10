@@ -16,6 +16,7 @@ data class SignUpState(
     val phone: String = "",
     val email: String = "",
     val password: String = "",
+    val confirmPassword: String ="",
     val isLoading: Boolean = false,
     val messError: String? = null,
     val isRegistered: Boolean = false
@@ -50,6 +51,9 @@ class SignUpViewModel( private val authRepository: AuthRepository) : ViewModel()
         _singupState.value = _singupState.value.copy(nickname = nickname)
     }
 
+    fun onConfirmPasswordChange(confirmPassword: String){
+        _singupState.value = _singupState.value.copy(confirmPassword = confirmPassword)
+    }
     fun signupAndLogin(onResult: (UserEntity?) -> Unit) {
         val state = _singupState.value
 
@@ -67,6 +71,12 @@ class SignUpViewModel( private val authRepository: AuthRepository) : ViewModel()
 
         if(state.password.length < 8){
             _singupState.value = state.copy(messError = "Password inserita non valida (min 8 caratteri)")
+            onResult(null)
+            return
+        }
+
+        if(state.password != state.confirmPassword){
+            _singupState.value = state.copy(messError = "Le password non coincidono")
             onResult(null)
             return
         }

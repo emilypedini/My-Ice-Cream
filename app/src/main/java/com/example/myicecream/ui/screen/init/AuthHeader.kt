@@ -17,11 +17,10 @@ import com.example.myicecream.ui.theme.LoginTitle
 @Composable
 fun AuthHeader(
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
         Spacer(modifier = Modifier.height(1.dp))
@@ -54,11 +53,5 @@ fun AuthHeader(
             color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            content = content
-        )
     }
 }
