@@ -52,9 +52,12 @@ fun MainScreen(
     val context = LocalContext.current
     val db = remember { IceCreamDatabase.getDatabase(context) }
     val userRepository = remember { UserRepository(db.userDAO()) }
+    val postRepository = remember { PostRepository(
+        db.postDAO(), db.notificationDAO()
+    ) }
 
     val profileViewModel = remember {
-        ProfileViewModel(userRepository, userId = loggedUser.id)
+        ProfileViewModel(userRepository, postRepository, userId = loggedUser.id)
     }
 
     val notificationsViewModel = remember {

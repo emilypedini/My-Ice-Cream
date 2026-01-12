@@ -21,7 +21,7 @@ class PostRepository(private val postDAO: PostDAO, private val notificationDAO: 
         return postDAO.getAllPosts()
     }
 
-    suspend fun getPostsByUser(userId: Int): List<PostEntity> {
+    suspend fun getPostsByUser(userId: Int): List<PostWithUser> {
         return postDAO.getPostByUser(userId)
     }
 

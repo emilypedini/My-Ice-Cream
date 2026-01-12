@@ -13,6 +13,7 @@ import com.example.myicecream.data.database.IceCreamDatabase
 import com.example.myicecream.data.database.UserEntity
 import com.example.myicecream.data.repositories.AuthRepository
 import com.example.myicecream.data.repositories.NotificationRepository
+import com.example.myicecream.data.repositories.PostRepository
 import com.example.myicecream.data.repositories.UserRepository
 import com.example.myicecream.ui.screen.auth.LoginScreen
 import com.example.myicecream.ui.screen.auth.LoginViewModel
@@ -84,6 +85,7 @@ fun MainNavigation(themeViewModel: ThemeViewModel) {
                 val profileViewModel = remember {
                     ProfileViewModel(
                         userRepository = UserRepository(db.userDAO()),
+                        postRepository = PostRepository(db.postDAO(), db.notificationDAO()),
                         userId = user.id
                     )
                 }

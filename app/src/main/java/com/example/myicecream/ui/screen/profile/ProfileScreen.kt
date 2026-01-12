@@ -1,7 +1,12 @@
 package com.example.myicecream.ui.screen.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -15,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
@@ -24,6 +30,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun ProfileScreen(
@@ -34,6 +41,11 @@ fun ProfileScreen(
     val name by viewModel.name.collectAsState()
     val surname by viewModel.surname.collectAsState()
     val nickname by viewModel.nickname.collectAsState()
+    val userPosts by viewModel.userPosts.collectAsState()
+
+    //LaunchedEffect(Unit) {
+      //  viewModel.loadUserPosts()
+    //}
 
     Column(
         modifier = Modifier
@@ -116,6 +128,34 @@ fun ProfileScreen(
                     text = "$name $surname",
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+
+        Text(
+            text = "I miei post",
+            modifier = Modifier.align(Alignment.Start),
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Italic,
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize().padding(top = 8.dp),
+            contentPadding = PaddingValues(4.dp)
+        ) {
+            items(userPosts) { post->
+                Image(
+                    painter = rememberAsyncImagePainter(post.imageUri),
+                    contentDescription = null,
+                    modifier = Modifier.padding(4.dp).fillMaxWidth()
+                        .height(180.dp).clickable {
+                            navController.navigate("postDetail/${post.postId}")
+                        },
+                    contentScale = ContentScale.Crop
                 )
             }
         }

@@ -2,10 +2,10 @@
 package com.example.myicecream.ui.screen.profile
 
 import android.net.Uri
-import android.provider.ContactsContract.CommonDataKinds.Nickname
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myicecream.data.database.PostWithUser
+import com.example.myicecream.data.repositories.PostRepository
 import com.example.myicecream.data.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
+    private val postRepository: PostRepository,
     private val userId: Int
 ) : ViewModel() {
 
@@ -31,9 +32,13 @@ class ProfileViewModel(
     private val _nickname = MutableStateFlow("")
     val nickname = _nickname.asStateFlow()
 
+    private val _userPosts = MutableStateFlow<List<PostWithUser>>(emptyList())
+    val userPosts = _userPosts.asStateFlow()
+
     init {
         loadProfileImage()
         loadUserInfo()
+        loadUserPosts()
     }
 
     private fun loadProfileImage() {
@@ -122,6 +127,12 @@ class ProfileViewModel(
             }
             userRepository.updatePassword(userId, newPassword)
             onResult(true, "Password aggiornata con successo.")
+        }
+    }
+
+    private fun loadUserPosts(){
+        viewModelScope.launch {
+            _userPosts.value = postRepository.getPostsByUser(userId)
         }
     }
 

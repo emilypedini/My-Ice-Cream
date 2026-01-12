@@ -27,8 +27,26 @@ interface PostDAO {
     """)
     suspend fun getAllPosts(): List<PostWithUser>
 
-    @Query("SELECT * FROM posts WHERE userId = :userId ORDER BY createdAt DESC")
-    suspend fun getPostByUser(userId: Int): List<PostEntity>
+    //@Query("SELECT * FROM posts WHERE userId = :userId ORDER BY createdAt DESC")
+    //suspend fun getPostByUser(userId: Int): List<PostEntity>
+
+    @Query("""
+    SELECT 
+        p.idPost AS postId,
+        p.description,
+        p.postImageUri AS imageUri,
+        p.createdAt,
+        u.id AS userId,
+        u.nickname,
+        u.name,
+        u.surname,
+        u.profileImagePath
+    FROM posts p
+    INNER JOIN users u ON p.userId = u.id
+    WHERE p.userId = :userId
+    ORDER BY p.createdAt DESC
+    """)
+    suspend fun getPostByUser(userId: Int): List<PostWithUser>
 
     @Query("DELETE FROM posts WHERE idPost = :idPost")
     suspend fun deletePost(idPost: Int)
