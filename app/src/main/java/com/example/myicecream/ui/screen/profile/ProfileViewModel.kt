@@ -130,7 +130,7 @@ class ProfileViewModel(
         }
     }
 
-    private fun loadUserPosts(){
+    fun loadUserPosts(){
         viewModelScope.launch {
             _userPosts.value = postRepository.getPostsByUser(userId)
         }

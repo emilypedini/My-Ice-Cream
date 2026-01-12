@@ -34,7 +34,8 @@ import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun ProfileScreen(
-    navController: NavController,
+    onPostClick: (Int) -> Unit,
+    onSettingsClick: () ->Unit,
     viewModel: ProfileViewModel
 ) {
     val imageUri by viewModel.profileImageUri.collectAsState()
@@ -43,9 +44,9 @@ fun ProfileScreen(
     val nickname by viewModel.nickname.collectAsState()
     val userPosts by viewModel.userPosts.collectAsState()
 
-    //LaunchedEffect(Unit) {
-      //  viewModel.loadUserPosts()
-    //}
+    LaunchedEffect(Unit) {
+        viewModel.loadUserPosts()
+    }
 
     Column(
         modifier = Modifier
@@ -70,7 +71,7 @@ fun ProfileScreen(
             )
 
             IconButton(
-                onClick = { navController.navigate("settings") },
+                onClick = onSettingsClick,
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
@@ -134,7 +135,7 @@ fun ProfileScreen(
 
         Text(
             text = "I miei post",
-            modifier = Modifier.align(Alignment.Start),
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             fontFamily = FontFamily.Serif,
             fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Italic,
@@ -153,7 +154,7 @@ fun ProfileScreen(
                     contentDescription = null,
                     modifier = Modifier.padding(4.dp).fillMaxWidth()
                         .height(180.dp).clickable {
-                            navController.navigate("postDetail/${post.postId}")
+                            onPostClick(post.postId)
                         },
                     contentScale = ContentScale.Crop
                 )

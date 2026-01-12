@@ -121,12 +121,12 @@ fun PostDetailContent(
         Text(
             buildAnnotatedString {
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("Post creato il:")
+                    append("Post creato il: ")
                 }
                 append(post.createdAt.toFormattedDate())
             },
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier.padding(top = 1.dp)
         )
     }
 }

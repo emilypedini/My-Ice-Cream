@@ -155,10 +155,16 @@ fun MainScreen(
 
             composable(NavBar.Profile.route) {
                 ProfileScreen(
-                    navController = rootNavController,
-                    viewModel = profileViewModel
+                    viewModel = profileViewModel,
+                    onPostClick = { postId ->
+                        navController.navigate("postDetail/$postId")
+                    },
+                    onSettingsClick = {
+                        rootNavController.navigate("settings")
+                    }
                 )
             }
+
 
             composable(NavBar.Add.route) {
                 CreatePostScreen(
