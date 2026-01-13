@@ -45,6 +45,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import com.example.utils.camera.saveImageToStorage
 
 @Composable
 fun CreatePostScreen(
@@ -54,15 +55,18 @@ fun CreatePostScreen(
     val imageUri by postViewModel.imageUri.collectAsState()
     val description by postViewModel.description.collectAsState()
     val focusManager = LocalFocusManager.current
+
+    val context = LocalContext.current
+
     val cameraLauncher = rememberCameraLauncher { uri ->
-        postViewModel.onImageSelect(uri.toString())
+        val savedUri = saveImageToStorage(uri, context.contentResolver)
+        postViewModel.onImageSelect(savedUri.toString())
     }
 
     val galleryLauncher = rememberGalleryLauncher { uri ->
-        postViewModel.onImageSelect(uri.toString())
+        val savedUri = saveImageToStorage(uri, context.contentResolver)
+        postViewModel.onImageSelect(savedUri.toString())
     }
-
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -174,6 +178,7 @@ fun CreatePostScreen(
                                     "Post pubblicato!",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                navController.popBackStack()
                             },
                             onError = {
                                 Toast.makeText(

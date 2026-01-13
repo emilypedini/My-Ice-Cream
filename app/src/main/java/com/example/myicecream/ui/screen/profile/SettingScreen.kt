@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -34,6 +35,7 @@ import com.example.utils.camera.rememberGalleryLauncher
 
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.utils.camera.saveImageToStorage
 
 @Composable
 fun SettingsScreen(
@@ -45,7 +47,10 @@ fun SettingsScreen(
     val name by profileViewModel.name.collectAsState()
     val surname by profileViewModel.surname.collectAsState()
     val nickname by profileViewModel.nickname.collectAsState()
+
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+
     var newName by remember { mutableStateOf(name) }
     var newSurname by remember { mutableStateOf(surname) }
     var newNickname by remember { mutableStateOf(nickname) }
@@ -56,13 +61,6 @@ fun SettingsScreen(
         newNickname = nickname
     }
 
-    val cameraLauncher = rememberCameraLauncher {
-        profileViewModel.onImageCaptured(it)
-    }
-
-    val galleryLauncher = rememberGalleryLauncher {
-        profileViewModel.onImageCaptured(it)
-    }
 
     var menuExpanded by remember { mutableStateOf(false) }
     var popUpPhoto by remember { mutableStateOf(false) }
@@ -79,6 +77,18 @@ fun SettingsScreen(
     var showPassword by remember { mutableStateOf(false) }
     var showConfirmPwd by remember { mutableStateOf(false) }
     var showReconfirmPwd by remember { mutableStateOf(false) }
+
+    val cameraLauncher = rememberCameraLauncher { uri ->
+        val savedUri = saveImageToStorage(uri, context.contentResolver)
+        profileViewModel.onImageCaptured(savedUri)
+    }
+
+    val galleryLauncher = rememberGalleryLauncher { uri ->
+        val savedUri = saveImageToStorage(uri, context.contentResolver)
+        profileViewModel.onImageCaptured(savedUri)
+    }
+
+
 
     Column(
         modifier = Modifier
@@ -342,12 +352,6 @@ fun SettingsScreen(
             onDismissRequest = {
                 popUpPwd = false
                 passwordError = null
-                currentPassword = ""
-                newPassword = ""
-                confirmNewPassword = ""
-                showPassword = false
-                showConfirmPwd = false
-                showReconfirmPwd = false
             },
             title = { Text("Modifica password") },
             text = {
@@ -458,12 +462,6 @@ fun SettingsScreen(
                 TextButton(onClick = {
                     popUpPwd = false
                     passwordError = null
-                    currentPassword = ""
-                    newPassword = ""
-                    confirmNewPassword = ""
-                    showPassword = false
-                    showConfirmPwd = false
-                    showReconfirmPwd = false
                 }) {
                     Text("Annulla")
                 }
