@@ -240,7 +240,7 @@ fun SettingsScreen(
 
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text="Tema scuro", color = MaterialTheme.colorScheme.primary)
+                    Text(text=" Tema ", color = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.weight(1f))
                     Switch(
                         checked = profileViewModel.isDarkTheme.collectAsState().value,
@@ -351,6 +351,13 @@ fun SettingsScreen(
             onDismissRequest = {
                 popUpPwd = false
                 passwordError = null
+                currentPassword = ""
+                newPassword = ""
+                confirmNewPassword = ""
+                passwordError = null
+                showPassword = false
+                showConfirmPwd = false
+                showReconfirmPwd = false
             },
             title = { Text("Modifica password") },
             text = {
@@ -402,7 +409,7 @@ fun SettingsScreen(
                     OutlinedTextField(
                         value = confirmNewPassword,
                         onValueChange = { confirmNewPassword = it },
-                        label = { Text("Conferma nuova password") },
+                        label = { Text("Conferma password") },
                         singleLine = true,
                         visualTransformation = if (showReconfirmPwd) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -449,6 +456,10 @@ fun SettingsScreen(
                                     currentPassword = ""
                                     newPassword = ""
                                     confirmNewPassword = ""
+                                    passwordError = null
+                                    showPassword = false
+                                    showConfirmPwd = false
+                                    showReconfirmPwd = false
                                 }
                             }
                         }
@@ -460,7 +471,13 @@ fun SettingsScreen(
             dismissButton = {
                 TextButton(onClick = {
                     popUpPwd = false
+                    currentPassword = ""
+                    newPassword = ""
+                    confirmNewPassword = ""
                     passwordError = null
+                    showPassword = false
+                    showConfirmPwd = false
+                    showReconfirmPwd = false
                 }) {
                     Text("Annulla")
                 }
