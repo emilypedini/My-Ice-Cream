@@ -5,17 +5,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -23,6 +31,9 @@ import coil.compose.AsyncImage
 import com.example.myicecream.ui.screen.theme.ThemeViewModel
 import com.example.utils.camera.rememberCameraLauncher
 import com.example.utils.camera.rememberGalleryLauncher
+
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
 fun SettingsScreen(
@@ -34,7 +45,7 @@ fun SettingsScreen(
     val name by profileViewModel.name.collectAsState()
     val surname by profileViewModel.surname.collectAsState()
     val nickname by profileViewModel.nickname.collectAsState()
-
+    val focusManager = LocalFocusManager.current
     var newName by remember { mutableStateOf(name) }
     var newSurname by remember { mutableStateOf(surname) }
     var newNickname by remember { mutableStateOf(nickname) }
@@ -64,6 +75,10 @@ fun SettingsScreen(
     var newPassword by remember { mutableStateOf("") }
     var confirmNewPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf<String?>(null) }
+
+    var showPassword by remember { mutableStateOf(false) }
+    var showConfirmPwd by remember { mutableStateOf(false) }
+    var showReconfirmPwd by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -159,7 +174,15 @@ fun SettingsScreen(
                     onValueChange = { newName = it },
                     label = { Text("Nome") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+
                 )
             }
 
@@ -171,7 +194,14 @@ fun SettingsScreen(
                     onValueChange = { newSurname = it },
                     label = { Text("Cognome") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
                 )
             }
 
@@ -183,7 +213,17 @@ fun SettingsScreen(
                     onValueChange = { newNickname = it },
                     label = { Text("Nickname") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = false
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
                 )
             }
 
@@ -302,6 +342,12 @@ fun SettingsScreen(
             onDismissRequest = {
                 popUpPwd = false
                 passwordError = null
+                currentPassword = ""
+                newPassword = ""
+                confirmNewPassword = ""
+                showPassword = false
+                showConfirmPwd = false
+                showReconfirmPwd = false
             },
             title = { Text("Modifica password") },
             text = {
@@ -310,7 +356,20 @@ fun SettingsScreen(
                         value = currentPassword,
                         onValueChange = { currentPassword = it },
                         label = { Text("Password attuale") },
-                        singleLine = true
+                        singleLine = true,
+                        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { showPassword = !showPassword }) {
+                                Icon(
+                                    imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                     )
 
                     Spacer(Modifier.height(8.dp))
@@ -319,7 +378,20 @@ fun SettingsScreen(
                         value = newPassword,
                         onValueChange = { newPassword = it },
                         label = { Text("Nuova password") },
-                        singleLine = true
+                        singleLine = true,
+                        visualTransformation = if (showConfirmPwd) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { showConfirmPwd = !showConfirmPwd }) {
+                                Icon(
+                                    imageVector = if (showConfirmPwd) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                     )
 
                     Spacer(Modifier.height(8.dp))
@@ -328,7 +400,20 @@ fun SettingsScreen(
                         value = confirmNewPassword,
                         onValueChange = { confirmNewPassword = it },
                         label = { Text("Conferma nuova password") },
-                        singleLine = true
+                        singleLine = true,
+                        visualTransformation = if (showReconfirmPwd) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { showReconfirmPwd = !showReconfirmPwd }) {
+                                Icon(
+                                    imageVector = if (showReconfirmPwd) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            focusManager.clearFocus()
+                        })
                     )
 
                     if (passwordError != null) {
@@ -373,6 +458,12 @@ fun SettingsScreen(
                 TextButton(onClick = {
                     popUpPwd = false
                     passwordError = null
+                    currentPassword = ""
+                    newPassword = ""
+                    confirmNewPassword = ""
+                    showPassword = false
+                    showConfirmPwd = false
+                    showReconfirmPwd = false
                 }) {
                     Text("Annulla")
                 }
