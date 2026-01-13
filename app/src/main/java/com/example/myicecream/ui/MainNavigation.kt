@@ -55,7 +55,8 @@ fun MainNavigation(themeViewModel: ThemeViewModel) {
                     navController.navigate("main") { popUpTo("login") { inclusive = true } }
                 },
                 onRegistratiClick = { navController.navigate("registrazione") },
-                viewModel = loginViewModel
+                viewModel = loginViewModel,
+                themeViewModel = themeViewModel
             )
         }
 

@@ -74,11 +74,11 @@ fun MapScreen(viewModel: MapViewModel) {
                         marker.position = GeoPoint(shop.latitude, shop.longitude)
                         marker.title = shop.name
                         overlays.add(marker)
-                        marker.setOnMarkerClickListener{
-                                clickedMarker, mapView ->
-                            viewModel.onShopSelected(shop)
-                            true
-                        }
+                        //marker.setOnMarkerClickListener{
+                          //      clickedMarker, mapView ->
+                            //viewModel.onShopSelected(shop)
+                            //true
+                        //}
                     }
                 }
             },
