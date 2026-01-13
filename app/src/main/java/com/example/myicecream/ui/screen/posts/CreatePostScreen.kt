@@ -194,7 +194,7 @@ fun CreatePostScreen(
                         value = selectedPosition ?: "",
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Dove lo hai comprato? (opzionale)")},
+                        label = { Text("Dove lo hai comprato? (op)")},
                         placeholder = { Text("Seleziona una gelateria")},
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
